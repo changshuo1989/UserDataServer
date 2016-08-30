@@ -22,6 +22,16 @@ public class UserDailyDataController {
 	@Autowired
 	UserDailyDataService userDailyDataService;
 	
+	@RequestMapping(value={"","environments"}, method=RequestMethod.GET)
+	public List<UserDailyData> getTotalUserData(SessionFilter filter){
+		return userDailyDataService.getTotalUserData(filter.getStart(),filter.getEnd());
+	}
+	
+	@RequestMapping(value={"environments/{env}","environments/{env}/types"}, method=RequestMethod.GET)
+	public List<UserDailyData> getEnvironmentUserData(@PathVariable("env") String env, SessionFilter filter){
+		return userDailyDataService.getEnvironmentUserData(env, filter.getStart(), filter.getEnd());
+	}
+	
 	@RequestMapping(value={"environments/{env}/types/{type}/hrsid/{hrsId}"}, method=RequestMethod.POST)
 	public boolean updateUserDailyData(@RequestBody(required=false) UserDailyDataRepresentation userDailyDataRep){
 		return userDailyDataService.updateUserDailyData(userDailyDataRep);

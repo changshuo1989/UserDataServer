@@ -75,6 +75,18 @@ public class UserDailyDataService {
  * 
  * 
  * */	
+	
+	public List<UserDailyData> getTotalUserData(String start, String end){
+		List<UserDailyData> userDailyDataList=patRepo.findTotalUserDataBySession(start, end);
+		return userDailyDataList;
+	}
+	
+	
+	public List<UserDailyData> getEnvironmentUserData(String env, String start, String end){
+		List<UserDailyData> userDailyDataList=patRepo.findEnvironmentUserDataBySession(env, start, end);
+		return userDailyDataList;
+	}
+	
 	public boolean updateUserDailyData(UserDailyDataRepresentation userDailyDataRep){
 		boolean isFinished=false;
 		try{

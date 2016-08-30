@@ -14,7 +14,8 @@ public interface CustomUserDailyDataDAO {
 	public boolean updateData(String env, String hrsId, String type, long ts, UpdatedData data);
 	
 	//ENVIRONMENT LEVEL
-	
+	public List<UserDailyData> findEnvironmentUserDataBySession(String env, String start, String end);
 	
 	//TOTAL LEVEL
+	public List<UserDailyData> findTotalUserDataBySession(String start, String end);
 }

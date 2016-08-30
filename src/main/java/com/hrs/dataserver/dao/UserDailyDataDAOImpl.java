@@ -106,7 +106,72 @@ public class UserDailyDataDAOImpl implements CustomUserDailyDataDAO {
 	
 	
 	//ENVIRONMENT LEVEL
+	public List<UserDailyData> findEnvironmentUserDataBySession(String env, String start, String end) {
+		List<UserDailyData> userDailyDataList=null;
+		long startTime=0;
+		long endTime=0;
+		
+		try{
+			if(start!=null && start.length()!=0){
+				startTime=DateAdapter.fromStringToDate(start).getTime();
+			}
+			
+			if(end!=null && end.length()!=0){
+				endTime=DateAdapter.fromStringToDate(end).getTime();
+			}
+			Query query=new Query();
+			query.addCriteria(Criteria.where("env").is(env));
+
+			if(startTime!=0 && endTime!=0){
+				query.addCriteria(Criteria.where("timestamp").gte(startTime).lte(endTime));
+			}
+			else if(startTime==0 && endTime!=0){
+				query.addCriteria(Criteria.where("timestamp").lte(endTime));
+			}
+			else if(startTime!=0 && endTime==0){
+				query.addCriteria(Criteria.where("timestamp").gte(startTime));
+			}
+			
+			userDailyDataList=operations.find(query, UserDailyData.class);
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		return userDailyDataList;
+	}
 	
 	//TOTAL LEVEL
+	public List<UserDailyData> findTotalUserDataBySession(String start, String end) {
+		List<UserDailyData> userDailyDataList=null;
+		long startTime=0;
+		long endTime=0;
+		
+		try{
+			if(start!=null && start.length()!=0){
+				startTime=DateAdapter.fromStringToDate(start).getTime();
+			}
+			
+			if(end!=null && end.length()!=0){
+				endTime=DateAdapter.fromStringToDate(end).getTime();
+			}
+			Query query=new Query();
+
+			if(startTime!=0 && endTime!=0){
+				query.addCriteria(Criteria.where("timestamp").gte(startTime).lte(endTime));
+			}
+			else if(startTime==0 && endTime!=0){
+				query.addCriteria(Criteria.where("timestamp").lte(endTime));
+			}
+			else if(startTime!=0 && endTime==0){
+				query.addCriteria(Criteria.where("timestamp").gte(startTime));
+			}
+			
+			userDailyDataList=operations.find(query, UserDailyData.class);
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		return userDailyDataList;
+	}
 
 }
