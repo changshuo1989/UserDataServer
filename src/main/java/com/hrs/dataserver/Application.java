@@ -23,7 +23,7 @@ public class Application implements CommandLineRunner{
 	}
 	
 	public void run(String... arg0) throws Exception {
-		repo.deleteAll();
+		//repo.deleteAll();
 	}
 	
 }
