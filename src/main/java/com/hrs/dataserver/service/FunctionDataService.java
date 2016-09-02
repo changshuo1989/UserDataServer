@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.hrs.dataserver.dao.FunctionDataDAO;
 import com.hrs.dataserver.entity.FunctionData;
+import com.hrs.dataserver.representation.FunctionDataRepresentation;
 
 public class FunctionDataService {
 	@Autowired
@@ -26,7 +27,6 @@ public class FunctionDataService {
 		return list;
 	}
 	
-	
 	public boolean CreateFunctionData(FunctionData functionData){
 		boolean isFinished=false;
 		try{
@@ -39,4 +39,10 @@ public class FunctionDataService {
 		return isFinished;
 	}
 	
+	public Object executeFunction(String functionName, FunctionDataRepresentation functionDataRep){
+		if(functionName.equals(functionDataRep)){
+			return functionRepo.executeFunction(functionDataRep);
+		}
+		return null;
+	}
 }

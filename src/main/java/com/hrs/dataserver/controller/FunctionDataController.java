@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hrs.dataserver.entity.FunctionData;
+import com.hrs.dataserver.representation.FunctionDataRepresentation;
 import com.hrs.dataserver.service.FunctionDataService;
 
 
@@ -33,5 +34,11 @@ public class FunctionDataController {
 	@RequestMapping(value={"{name}"}, method=RequestMethod.GET)
 	public FunctionData findFunctionByName(@PathVariable("name") String name){
 		return functionDataService.findFunctionByName(name);
+	}
+	
+	@RequestMapping(value={"{name}"}, method=RequestMethod.POST)
+	public Object executeFunctionByName(@PathVariable("name") String name,
+			                            @RequestBody(required=false) FunctionDataRepresentation functionDataRep){
+		return functionDataService.executeFunction(name, functionDataRep);
 	}
 }
