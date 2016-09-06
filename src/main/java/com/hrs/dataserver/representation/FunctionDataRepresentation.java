@@ -10,7 +10,6 @@ public class FunctionDataRepresentation {
 	
 	private String functionName;
 	
-	
 	public String getStartDate() {
 		return startDate;
 	}

@@ -12,7 +12,9 @@ import org.springframework.data.mongodb.core.script.ExecutableMongoScript;
 import org.springframework.util.Assert;
 
 import com.hrs.dataserver.entity.FunctionData;
+import com.hrs.dataserver.entity.UserDailyData;
 import com.hrs.dataserver.representation.FunctionDataRepresentation;
+import com.hrs.dataserver.tool.DateAdapter;
 import com.mongodb.Function;
 
 public class FunctionDataDAOImpl implements CustomFunctionDataDAO{
@@ -40,6 +42,54 @@ public class FunctionDataDAOImpl implements CustomFunctionDataDAO{
 	}
 	
 	
+	private Object toMongoScript(FunctionDataRepresentation functionDataRep){
+		StringBuilder sb=new StringBuilder();
+		Object obj=null;
+		try{
+			String collectionName=operations.getCollectionName(UserDailyData.class);
+			ScriptOperations scriptOps=operations.scriptOps();
+			sb.append("function(){var doc=db."+collectionName+".find({");
+			if(functionDataRep.getEnvironments()!=null && functionDataRep.getEnvironments().size()!=0){
+					sb.append("env:{$in:[");
+					for(int i=0; i<functionDataRep.getEnvironments().size(); i++){
+						sb.append("'"+functionDataRep.getEnvironments().get(i)+"',");
+					}
+					sb.append("]},");
+			}
+			if(functionDataRep.getUserTypes()!=null && functionDataRep.getUserTypes().size()!=0){
+					sb.append("type:{$in:[");
+					for(int i=0; i<functionDataRep.getUserTypes().size(); i++){
+						sb.append("'"+functionDataRep.getUserTypes().get(i)+"',");
+					}
+					sb.append("]},");
+			}
+			if(functionDataRep.getStartDate()!=null && functionDataRep.getEndDate()!=null){
+				long startTimestamp=DateAdapter.fromStringToDate(functionDataRep.getStartDate()).getTime();
+				long endTimestamp=DateAdapter.fromStringToDate(functionDataRep.getEndDate()).getTime();
+				sb.append("timestamp:{$gte:"+startTimestamp+",$lte:"+endTimestamp+"},");
+			}
+			else if(functionDataRep.getStartDate()!=null && functionDataRep.getEndDate()==null){
+				long startTimestamp=DateAdapter.fromStringToDate(functionDataRep.getStartDate()).getTime();
+				sb.append("timestamp:{$gte:"+startTimestamp+"},");
+			}
+			else if(functionDataRep.getStartDate()==null && functionDataRep.getEndDate()!=null){
+				long endTimestamp=DateAdapter.fromStringToDate(functionDataRep.getEndDate()).getTime();
+				sb.append("timestamp:{$lte:"+endTimestamp+"},");
+			}
+			
+			sb.append("}).toArray(); return doc;");
+			System.out.println(sb.toString());
+			ExecutableMongoScript script=new ExecutableMongoScript(sb.toString());
+			obj=scriptOps.execute(script);
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		return obj;
+	}
+	
+	
 	//TODO: FINISH TEST!
 	public Object executeFunction(FunctionDataRepresentation functionDataRep){
 		Object obj=null;
@@ -48,15 +98,23 @@ public class FunctionDataDAOImpl implements CustomFunctionDataDAO{
 			if(functionData!=null && functionData.getFunction()!=null){
 				ScriptOperations scriptOps=operations.scriptOps();
 				ExecutableMongoScript script=new ExecutableMongoScript(functionData.getFunction());
-				obj=scriptOps.execute(script);
+				Object para=toMongoScript(functionDataRep);
+				obj=scriptOps.execute(script, para);
 			}
-			//ScriptOperations scriptOps=operations.scriptOps();
-			//ExecutableMongoScript script=new ExecutableMongoScript("function(x){return x;}");
-			//Object res=scriptOps.execute(script);
 		}
 		catch(Exception e){
 			e.printStackTrace();
 		}
+		
+		
+		//ScriptOperations scriptOps=operations.scriptOps();
+		//String collectionName=operations.getCollectionName(UserDailyData.class);
+		//System.out.println(collectionName);
+		//ExecutableMongoScript script=new ExecutableMongoScript("function(){var ret=db.userDailyData.find({env:'test1'}).toArray(); return ret;}");
+		//obj=scriptOps.execute(script);
+		//UserDailyData udd=(UserDailyData)obj;
+		//System.out.println(obj);
+		
 		return obj;
 	}
 }
