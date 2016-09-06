@@ -45,7 +45,7 @@ public class FunctionDataDAOImpl implements CustomFunctionDataDAO{
 		Object obj=null;
 		try{
 			FunctionData functionData=getFunctionData(functionDataRep.getFunctionName());
-			if(functionData!=null){
+			if(functionData!=null && functionData.getFunction()!=null){
 				ScriptOperations scriptOps=operations.scriptOps();
 				ExecutableMongoScript script=new ExecutableMongoScript(functionData.getFunction());
 				obj=scriptOps.execute(script);

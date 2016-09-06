@@ -28,6 +28,8 @@ public class UserDailyData {
 	//data related
 	private Map<String, List<UpdatedData>> data;	
 	
+	
+	
 	public UserDailyData() {
 	}
 	

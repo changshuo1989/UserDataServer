@@ -14,16 +14,13 @@ import com.hrs.dataserver.tool.DateAdapter;
 
 @SpringBootApplication
 public class Application implements CommandLineRunner{
-	
-	@Autowired
-	private UserDailyDataDAO repo;
-	
+		
 	public static void main(String[] args) {
 	    SpringApplication.run(Application.class, args);
 	}
 	
 	public void run(String... arg0) throws Exception {
-		//repo.deleteAll();
+		
 	}
 	
 }
