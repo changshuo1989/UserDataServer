@@ -24,8 +24,9 @@ public class UserDailyDataDtoFactory {
 		userDailyDataDto.setDate(DateAdapter.fromTimestampToDateString(userDailyData.getTimestamp()));
 		
 		//data part
-		Map<String, List<Map<String, String>>> userDtoDataMap=new HashMap<String, List<Map<String,String>>>();
+		userDailyDataDto.setData(userDailyData.getUpdatedData());
 		
+		/*
 		Map<String, List<UpdatedData>>userDaoDataMap=userDailyData.getUpdatedData();
 		
 		
@@ -48,6 +49,8 @@ public class UserDailyDataDtoFactory {
 			
 			userDailyDataDto.setData(userDtoDataMap);
 		}
+		*/
 		return userDailyDataDto;
 	}
+	
 }

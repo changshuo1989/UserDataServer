@@ -8,7 +8,7 @@ public class UserDailyDataRepresentation {
 	private String utype;
 	private String uid;
 	private String type;
-	private long ts;
+	private String ts;
 	private Map<String, String> data;
 	
 	public String getEnv() {
@@ -41,11 +41,11 @@ public class UserDailyDataRepresentation {
 		this.type = type;
 	}
 	
-	public long getTs() {
+	public String getTs() {
 		return ts;
 	}
 	
-	public void setTs(long ts) {
+	public void setTs(String ts) {
 		this.ts = ts;
 	}
 	

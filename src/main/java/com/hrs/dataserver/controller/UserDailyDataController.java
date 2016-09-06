@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.hrs.dataserver.dto.UserDailyDataDTO;
 import com.hrs.dataserver.entity.UserDailyData;
 import com.hrs.dataserver.filter.SessionFilter;
 import com.hrs.dataserver.representation.UserDailyDataRepresentation;

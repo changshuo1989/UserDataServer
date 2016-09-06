@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.CriteriaDefinition;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.util.Assert;
 
@@ -47,7 +46,7 @@ public class UserDailyDataDAOImpl implements CustomUserDailyDataDAO {
 			String id=IdAdapter.getUserIdByElements(env, hrsId, type, ts);
 			UserDailyData user=findUserDailyDataById(id);
 			if(user!=null){
-				user.addToUpdatedData(data);
+				user.addUpdatedData(data);
 				operations.save(user);
 			}
 			else{

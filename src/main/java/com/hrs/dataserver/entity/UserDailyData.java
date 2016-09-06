@@ -18,23 +18,24 @@ public class UserDailyData {
 	//index related
 	private String env;
 	
-	private String hrsId;
-	
 	private String type;
+	
+	private String hrsId;
 	
 	private long timestamp;
 	
 
 	//data related
-	private Map<String, List<UpdatedData>> data;	
-	
+	//private Map<String, List<UpdatedData>> data;	
+	private Map<String, List<Map<String, String>>> data;
 	
 	
 	public UserDailyData() {
+		
 	}
 	
 	public UserDailyData(String env, String hrsId, String type,
-					     long ts, Map<String, List<UpdatedData>> updatedData) {
+					     long ts, Map<String, List<Map<String, String>>> updatedData) {
 		try{
 			this.id=IdAdapter.getUserIdByElements(env, hrsId, type, ts);
 			this.hrsId = hrsId;
@@ -55,12 +56,13 @@ public class UserDailyData {
 			this.env = env;
 			this.type = type;
 			this.timestamp = ts;
-			this.data=new HashMap<String, List<UpdatedData>>();
+			this.data=new HashMap<String, List<Map<String, String>>>();
 		}
 		catch(Exception e){
 			e.printStackTrace();
 		}
 	}
+	
 	
 	public UserDailyData(String env, String hrsId, String type, long ts, UpdatedData data){
 		try{
@@ -69,12 +71,13 @@ public class UserDailyData {
 			this.env = env;
 			this.type = type;
 			this.timestamp=ts;
-			addToUpdatedData(data);
+			addUpdatedData(data);
 		}
 		catch(Exception e){
 			e.printStackTrace();
 		}
 	}
+	
 	
 	public String getId() {
 		return id;
@@ -109,14 +112,19 @@ public class UserDailyData {
 	}
 
 
-	public Map<String, List<UpdatedData>> getUpdatedData() {
+	public Map<String, List<Map<String, String>>> getUpdatedData() {
 		return data;
 	}
 
-	public void setUpdatedData(Map<String, List<UpdatedData>> updatedData) {
+	public void setUpdatedData(Map<String, List<Map<String, String>>> updatedData) {
 		this.data = updatedData;
 	}
 	
+	
+	
+	//private Map<String, List<UpdatedData>> data;	
+	//private Map<String, List<Map<String, String>>> data;
+	/*
 	public void addToUpdatedData(UpdatedData newData){
 		if(data==null){
 			this.data=new HashMap<String, List<UpdatedData>>();
@@ -133,7 +141,51 @@ public class UserDailyData {
 			this.data.put(dataName, list);
 		}
 	}
-
+	 */
+	
+	//private Map<String, List<Map<String, String>>> data;
+	public void addUpdatedData(UpdatedData updatedData){
+		if(data==null){
+			this.data=new HashMap<String, List<Map<String,String>>>();
+		}
+		String metricName=updatedData.getName();
+		Map<String, String> map=updatedData.getValue();
+		if(data.containsKey(metricName)){
+			boolean isDuplicate=true;
+			List<Map<String, String>> list=data.get(metricName);
+			for(int i=0; i<list.size(); i++){
+				Map<String, String> valueMap=list.get(i);
+				for(String key : valueMap.keySet()){
+					if(map.containsKey(key)){
+						if(map.get(key).equals(valueMap.get(key))){
+							continue;
+						}
+						else{
+							isDuplicate=false;
+							break;
+						}
+					}
+					else{
+						isDuplicate=false;
+						break;
+					}
+				}
+				if(!isDuplicate){
+					break;
+				}
+			}
+			if(!isDuplicate){
+				list.add(map);
+				this.data.put(metricName, list);
+			}
+		}
+		else{
+			List<Map<String, String>> list=new ArrayList<Map<String,String>>();
+			list.add(map);
+			this.data.put(metricName, list);
+		}
+	}
+	
 	public long getTimestamp() {
 		return timestamp;
 	}

@@ -38,7 +38,7 @@ public class UserDailyDataService {
 			String hrsId=userDailyDataRep.getUid();
 			String type=userDailyDataRep.getUtype();
 			//String date=DateAdapter.fromTimestampToDateString(userDailyDataRep.getTs());
-			long ts=DateAdapter.fromTimestampToDateTimestamp(userDailyDataRep.getTs());
+			long ts=DateAdapter.fromTimestampToDateTimestamp(Long.parseLong(userDailyDataRep.getTs()));
 			id=IdAdapter.getUserIdByElements(env, hrsId, type, ts);
 		}
 		catch(Exception e){
@@ -52,7 +52,7 @@ public class UserDailyDataService {
 		try{
 			Map<String, String> map=userDailyDataRep.getData();
 			data.setName(userDailyDataRep.getType());
-			data.setTimestamp(userDailyDataRep.getTs());
+			//data.setTimestamp(userDailyDataRep.getTs());
 			data.setValue(map);
 		}
 		catch(Exception e){
@@ -60,10 +60,6 @@ public class UserDailyDataService {
 		}
 		return data;
 	}
-	
-	
-	
-	
 	
 /*
  * 
@@ -93,7 +89,7 @@ public class UserDailyDataService {
 			String env=userDailyDataRep.getEnv();
 			String hrsId=userDailyDataRep.getUid();
 			String type=userDailyDataRep.getUtype();
-			long ts=DateAdapter.fromTimestampToDateTimestamp(userDailyDataRep.getTs());
+			long ts=DateAdapter.fromTimestampToDateTimestamp(Long.parseLong(userDailyDataRep.getTs()));
 			UpdatedData data=getUpdatedDataFromUserDailyDataRepresentation(userDailyDataRep);
 			patRepo.updateData(env, hrsId, type, ts, data);
 			isFinished=true;
