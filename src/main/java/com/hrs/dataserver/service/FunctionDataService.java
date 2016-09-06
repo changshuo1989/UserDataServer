@@ -40,7 +40,7 @@ public class FunctionDataService {
 	}
 	
 	public Object executeFunction(String functionName, FunctionDataRepresentation functionDataRep){
-		if(functionName.equals(functionDataRep)){
+		if(functionName.equals(functionDataRep.getFunctionName())){
 			return functionRepo.executeFunction(functionDataRep);
 		}
 		return null;

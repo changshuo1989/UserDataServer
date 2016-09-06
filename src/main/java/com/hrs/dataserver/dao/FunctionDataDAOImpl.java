@@ -63,6 +63,7 @@ public class FunctionDataDAOImpl implements CustomFunctionDataDAO{
 					}
 					sb.append("]},");
 			}
+			
 			if(functionDataRep.getStartDate()!=null && functionDataRep.getEndDate()!=null){
 				long startTimestamp=DateAdapter.fromStringToDate(functionDataRep.getStartDate()).getTime();
 				long endTimestamp=DateAdapter.fromStringToDate(functionDataRep.getEndDate()).getTime();
@@ -77,10 +78,11 @@ public class FunctionDataDAOImpl implements CustomFunctionDataDAO{
 				sb.append("timestamp:{$lte:"+endTimestamp+"},");
 			}
 			
-			sb.append("}).toArray(); return doc;");
+			sb.append("}).toArray(); return doc;}");
 			System.out.println(sb.toString());
 			ExecutableMongoScript script=new ExecutableMongoScript(sb.toString());
 			obj=scriptOps.execute(script);
+			System.out.println("Object:"+obj.toString());
 		}
 		catch(Exception e){
 			e.printStackTrace();

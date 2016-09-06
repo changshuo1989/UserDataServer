@@ -39,6 +39,8 @@ public class FunctionDataController {
 	@RequestMapping(value={"{name}"}, method=RequestMethod.POST)
 	public Object executeFunctionByName(@PathVariable("name") String name,
 			                            @RequestBody(required=false) FunctionDataRepresentation functionDataRep){
+		
+		System.out.println(functionDataRep.toString());
 		return functionDataService.executeFunction(name, functionDataRep);
 	}
 }
