@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-import com.hrs.dataserver.component.UpdatedData;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import com.hrs.dataserver.component.UpdatedData;
 import com.hrs.dataserver.tool.IdAdapter;
 
 @Document
@@ -16,12 +18,13 @@ public class UserDailyData {
 	private String id;
 
 	//index related
+	@Indexed
 	private String env;
-	
+	@Indexed
 	private String type;
-	
+	@Indexed
 	private String hrsId;
-	
+	@Indexed
 	private long timestamp;
 	
 
