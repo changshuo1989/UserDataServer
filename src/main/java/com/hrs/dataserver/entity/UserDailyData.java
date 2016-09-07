@@ -154,9 +154,10 @@ public class UserDailyData {
 		String metricName=updatedData.getName();
 		Map<String, String> map=updatedData.getValue();
 		if(data.containsKey(metricName)){
-			boolean isDuplicate=true;
+			boolean isDuplicate=false;
 			List<Map<String, String>> list=data.get(metricName);
 			for(int i=0; i<list.size(); i++){
+				boolean found=true;
 				Map<String, String> valueMap=list.get(i);
 				for(String key : valueMap.keySet()){
 					if(map.containsKey(key)){
@@ -164,16 +165,17 @@ public class UserDailyData {
 							continue;
 						}
 						else{
-							isDuplicate=false;
+							found=false;
 							break;
 						}
 					}
 					else{
-						isDuplicate=false;
+						found=false;
 						break;
 					}
 				}
-				if(!isDuplicate){
+				if(found){
+					isDuplicate=true;
 					break;
 				}
 			}
