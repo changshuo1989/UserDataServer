@@ -19,10 +19,15 @@ public class FunctionDataService {
 	}
 	
 	public List<String> findFunctionList(){
-		List<FunctionData> fList = functionRepo.findAll();
 		List<String> list=new ArrayList<String>();
-		for(FunctionData fData: fList){
-			list.add(fData.getName());
+		try{
+			List<FunctionData> fList = functionRepo.findAll();
+			for(FunctionData fData: fList){
+				list.add(fData.getName());
+			}
+		}
+		catch(Exception e){
+			e.printStackTrace();
 		}
 		return list;
 	}
@@ -40,9 +45,26 @@ public class FunctionDataService {
 	}
 	
 	public Object executeFunction(String functionName, FunctionDataRepresentation functionDataRep){
-		if(functionName.equals(functionDataRep.getFunctionName())){
-			return functionRepo.executeFunction(functionDataRep);
+		try{
+			if(functionName.equals(functionDataRep.getFunctionName())){
+				return functionRepo.executeFunction(functionDataRep);
+			}
+		}
+		catch(Exception e){
+			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public boolean deleteFunction(String functionName){
+		boolean isFinished=false;
+		try{
+			functionRepo.delete(functionName);
+			isFinished=true;
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		return isFinished;
 	}
 }

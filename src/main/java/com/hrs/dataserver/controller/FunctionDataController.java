@@ -43,4 +43,9 @@ public class FunctionDataController {
 		System.out.println(functionDataRep.toString());
 		return functionDataService.executeFunction(name, functionDataRep);
 	}
+	
+	@RequestMapping(value={"{name}"}, method=RequestMethod.DELETE)
+	public boolean deleteFunctionByName(@PathVariable("name") String name){
+		return functionDataService.deleteFunction(name);
+	}
 }
