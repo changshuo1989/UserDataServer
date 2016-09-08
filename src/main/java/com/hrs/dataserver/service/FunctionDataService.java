@@ -35,8 +35,11 @@ public class FunctionDataService {
 	public boolean CreateFunctionData(FunctionData functionData){
 		boolean isFinished=false;
 		try{
-			functionRepo.save(functionData);
-			isFinished=true;
+			//make sure we have function name
+			if(functionData.getName()!=null && functionData.getName().length()!=0){
+				functionRepo.save(functionData);
+				isFinished=true;
+			}
 		}
 		catch(Exception e){
 			e.printStackTrace();
@@ -55,7 +58,6 @@ public class FunctionDataService {
 		}
 		return null;
 	}
-	
 	public boolean deleteFunction(String functionName){
 		boolean isFinished=false;
 		try{
