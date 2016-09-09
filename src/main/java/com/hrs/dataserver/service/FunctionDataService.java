@@ -7,16 +7,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.hrs.dataserver.dao.FunctionDataDAO;
 import com.hrs.dataserver.entity.FunctionData;
-import com.hrs.dataserver.representation.FunctionDataRepresentation;
+import com.hrs.dataserver.representation.UserFunctionDataRepresentation;
+import com.hrs.dataserver.tool.IdAdapter;
+import com.hrs.dataserver.tool.LayerAdapter;
 
 public class FunctionDataService {
 	@Autowired
 	FunctionDataDAO functionRepo;
+
 	
-	public FunctionData findFunctionByName(String name){
-		FunctionData functionData=functionRepo.findOne(name);
+	
+	public FunctionData findFunction(String layer, String name){
+		FunctionData functionData=functionRepo.findFunctionData(layer, name);
 		return functionData;
 	}
+	
 	
 	public List<String> findFunctionList(){
 		List<String> list=new ArrayList<String>();
@@ -35,8 +40,13 @@ public class FunctionDataService {
 	public boolean CreateFunctionData(FunctionData functionData){
 		boolean isFinished=false;
 		try{
-			//make sure we have function name
-			if(functionData.getName()!=null && functionData.getName().length()!=0){
+			//make sure we have function name and layers
+			if(functionData.getName()!=null && functionData.getName().length()!=0 && 
+			   functionData.getLayer()!=null && functionData.getLayer().length()!=0 &&
+			   functionData.getFunction()!=null && functionData.getFunction().length()!=0){
+				
+				String layerInput=functionData.getLayer();
+				functionData.setLayer(LayerAdapter.getLayer(layerInput));
 				functionRepo.save(functionData);
 				isFinished=true;
 			}
@@ -47,7 +57,7 @@ public class FunctionDataService {
 		return isFinished;
 	}
 	
-	public Object executeFunction(String functionName, FunctionDataRepresentation functionDataRep){
+	public Object executeFunction(String functionName, UserFunctionDataRepresentation functionDataRep){
 		try{
 			if(functionName.equals(functionDataRep.getFunctionName())){
 				return functionRepo.executeFunction(functionDataRep);

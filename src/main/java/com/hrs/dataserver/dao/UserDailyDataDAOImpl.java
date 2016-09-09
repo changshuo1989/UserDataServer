@@ -58,7 +58,6 @@ public class UserDailyDataDAOImpl implements CustomUserDailyDataDAO {
 		catch(Exception e){
 			e.printStackTrace();
 		}
-		
 		return isFinished;
 	}
 

@@ -1,8 +1,5 @@
 package com.hrs.dataserver.dao;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.ScriptOperations;
@@ -12,10 +9,9 @@ import org.springframework.data.mongodb.core.script.ExecutableMongoScript;
 import org.springframework.util.Assert;
 
 import com.hrs.dataserver.entity.FunctionData;
-import com.hrs.dataserver.entity.UserDailyData;
-import com.hrs.dataserver.representation.FunctionDataRepresentation;
-import com.hrs.dataserver.tool.DateAdapter;
-import com.mongodb.Function;
+import com.hrs.dataserver.representation.IFunctionDataRepresentation;
+import com.hrs.dataserver.tool.IdAdapter;
+
 
 public class FunctionDataDAOImpl implements CustomFunctionDataDAO{
 	private MongoOperations operations;
@@ -27,12 +23,11 @@ public class FunctionDataDAOImpl implements CustomFunctionDataDAO{
 	}
 	
 	
-	
-	private FunctionData getFunctionData(String functionName){
+	private FunctionData findFunctionDataById(String id){
 		FunctionData functionData=null;
 		try{
 			Query query=new Query();
-			query.addCriteria(Criteria.where("name").is(functionName));
+			query.addCriteria(Criteria.where("_id").is(id));
 			functionData=operations.findOne(query, FunctionData.class);
 		}
 		catch(Exception e){
@@ -42,81 +37,55 @@ public class FunctionDataDAOImpl implements CustomFunctionDataDAO{
 	}
 	
 	
-	private Object toMongoScript(FunctionDataRepresentation functionDataRep){
-		StringBuilder sb=new StringBuilder();
+	
+	private Object toUserMongoScript(IFunctionDataRepresentation functionDataRep){
 		Object obj=null;
 		try{
-			String collectionName=operations.getCollectionName(UserDailyData.class);
+			
+			String collectionName=operations.getCollectionName(functionDataRep.getEntityClass());
 			ScriptOperations scriptOps=operations.scriptOps();
-			sb.append("function(){var doc=db."+collectionName+".find({");
-			if(functionDataRep.getEnvironments()!=null && functionDataRep.getEnvironments().size()!=0){
-					sb.append("env:{$in:[");
-					for(int i=0; i<functionDataRep.getEnvironments().size(); i++){
-						sb.append("'"+functionDataRep.getEnvironments().get(i)+"',");
-					}
-					sb.append("]},");
-			}
-			if(functionDataRep.getUserTypes()!=null && functionDataRep.getUserTypes().size()!=0){
-					sb.append("type:{$in:[");
-					for(int i=0; i<functionDataRep.getUserTypes().size(); i++){
-						sb.append("'"+functionDataRep.getUserTypes().get(i)+"',");
-					}
-					sb.append("]},");
-			}
 			
-			if(functionDataRep.getStartDate()!=null && functionDataRep.getEndDate()!=null){
-				long startTimestamp=DateAdapter.fromStringToDate(functionDataRep.getStartDate()).getTime();
-				long endTimestamp=DateAdapter.fromStringToDate(functionDataRep.getEndDate()).getTime();
-				sb.append("timestamp:{$gte:"+startTimestamp+",$lte:"+endTimestamp+"},");
-			}
-			else if(functionDataRep.getStartDate()!=null && functionDataRep.getEndDate()==null){
-				long startTimestamp=DateAdapter.fromStringToDate(functionDataRep.getStartDate()).getTime();
-				sb.append("timestamp:{$gte:"+startTimestamp+"},");
-			}
-			else if(functionDataRep.getStartDate()==null && functionDataRep.getEndDate()!=null){
-				long endTimestamp=DateAdapter.fromStringToDate(functionDataRep.getEndDate()).getTime();
-				sb.append("timestamp:{$lte:"+endTimestamp+"},");
-			}
-			
-			sb.append("}).toArray(); return doc;}");
-			System.out.println(sb.toString());
-			ExecutableMongoScript script=new ExecutableMongoScript(sb.toString());
+			String scriptStr=functionDataRep.getMongoScript(collectionName);
+			ExecutableMongoScript script=new ExecutableMongoScript(scriptStr);
 			obj=scriptOps.execute(script);
-			System.out.println("Object:"+obj.toString());
+			//System.out.println("Object:"+obj.toString());
 		}
 		catch(Exception e){
 			e.printStackTrace();
 		}
-		
 		return obj;
 	}
 	
 	
+	public FunctionData findFunctionData(String layer, String name){
+		FunctionData functionData=null;
+		try{
+			String id=IdAdapter.getFunctionIdByElements(layer, name);
+			functionData=findFunctionDataById(id);
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		return functionData;
+	}
+	
 	//TODO: FINISH TEST!
-	public Object executeFunction(FunctionDataRepresentation functionDataRep){
+	public Object executeFunction(IFunctionDataRepresentation functionDataRep){
 		Object obj=null;
 		try{
-			FunctionData functionData=getFunctionData(functionDataRep.getFunctionName());
+			//FunctionData functionData=getFunctionData(functionDataRep.getFunctionName());
+			String id=IdAdapter.getFunctionIdByElements(functionDataRep.getFunctionLayer(), functionDataRep.getFunctionName());
+			FunctionData functionData=findFunctionDataById(id);
 			if(functionData!=null && functionData.getFunction()!=null){
 				ScriptOperations scriptOps=operations.scriptOps();
 				ExecutableMongoScript script=new ExecutableMongoScript(functionData.getFunction());
-				Object para=toMongoScript(functionDataRep);
+				Object para=toUserMongoScript(functionDataRep);
 				obj=scriptOps.execute(script, para);
 			}
 		}
 		catch(Exception e){
 			e.printStackTrace();
-		}
-		
-		
-		//ScriptOperations scriptOps=operations.scriptOps();
-		//String collectionName=operations.getCollectionName(UserDailyData.class);
-		//System.out.println(collectionName);
-		//ExecutableMongoScript script=new ExecutableMongoScript("function(){var ret=db.userDailyData.find({env:'test1'}).toArray(); return ret;}");
-		//obj=scriptOps.execute(script);
-		//UserDailyData udd=(UserDailyData)obj;
-		//System.out.println(obj);
-		
+		}			
 		return obj;
 	}
 }
