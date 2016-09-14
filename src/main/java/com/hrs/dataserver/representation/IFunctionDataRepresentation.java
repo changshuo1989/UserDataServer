@@ -1,6 +1,5 @@
 package com.hrs.dataserver.representation;
 
-import org.springframework.data.mongodb.core.MongoOperations;
 
 public interface IFunctionDataRepresentation {
 	

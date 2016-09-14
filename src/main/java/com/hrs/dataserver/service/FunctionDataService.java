@@ -47,6 +47,7 @@ public class FunctionDataService {
 				
 				String layerInput=functionData.getLayer();
 				functionData.setLayer(LayerAdapter.getLayer(layerInput));
+				functionData.setId();
 				functionRepo.save(functionData);
 				isFinished=true;
 			}
@@ -57,9 +58,10 @@ public class FunctionDataService {
 		return isFinished;
 	}
 	
-	public Object executeFunction(String functionName, UserFunctionDataRepresentation functionDataRep){
+	public Object executeFunction(String functionLayer, String functionName, UserFunctionDataRepresentation functionDataRep){
 		try{
-			if(functionName.equals(functionDataRep.getFunctionName())){
+			if(functionDataRep.getFunctionLayer().equals(functionLayer) &&
+			   functionDataRep.getFunctionName() !=null && functionName.equals(functionDataRep.getFunctionName())){
 				return functionRepo.executeFunction(functionDataRep);
 			}
 		}
@@ -68,11 +70,14 @@ public class FunctionDataService {
 		}
 		return null;
 	}
-	public boolean deleteFunction(String functionName){
+	public boolean deleteFunction(String functionLayer, String functionName){
 		boolean isFinished=false;
 		try{
-			functionRepo.delete(functionName);
-			isFinished=true;
+			if(!LayerAdapter.getLayer(functionLayer).equals(LayerAdapter.NONE)){
+				String id=IdAdapter.getFunctionIdByElements(LayerAdapter.getLayer(functionLayer), functionName);
+				functionRepo.delete(id);
+				isFinished=true;
+			}
 		}
 		catch(Exception e){
 			e.printStackTrace();

@@ -21,6 +21,8 @@ public class FunctionDataController {
 	@Autowired
 	FunctionDataService functionDataService;
 	
+	
+	//TODO:Maybe create a representation to hold input data
 	@RequestMapping(value={""}, method=RequestMethod.POST)
 	public boolean createFunctionData(@RequestBody(required=false) FunctionData functionData){
 		return functionDataService.CreateFunctionData(functionData);
@@ -31,21 +33,19 @@ public class FunctionDataController {
 		return functionDataService.findFunctionList();
 	}
 	
-	@RequestMapping(value={"{type}/{name}"}, method=RequestMethod.GET)
+	@RequestMapping(value={"types/{type}/names/{name}"}, method=RequestMethod.GET)
 	public FunctionData findFunctionByName(@PathVariable("type") String layer ,@PathVariable("name") String name){
 		return functionDataService.findFunction(layer,name);
 	}
 	
-	@RequestMapping(value={"{name}"}, method=RequestMethod.POST)
-	public Object executeFunctionByName(@PathVariable("name") String name,
+	@RequestMapping(value={"types/{type}/names/{name}"}, method=RequestMethod.POST)
+	public Object executeFunctionByName(@PathVariable("type") String layer, @PathVariable("name") String name,
 			                            @RequestBody(required=false) UserFunctionDataRepresentation functionDataRep){
-		
-		System.out.println(functionDataRep.toString());
-		return functionDataService.executeFunction(name, functionDataRep);
+		return functionDataService.executeFunction(layer, name, functionDataRep);
 	}
 	
-	@RequestMapping(value={"{name}"}, method=RequestMethod.DELETE)
-	public boolean deleteFunctionByName(@PathVariable("name") String name){
-		return functionDataService.deleteFunction(name);
+	@RequestMapping(value={"types/{type}/names/{name}"}, method=RequestMethod.DELETE)
+	public boolean deleteFunctionByName(@PathVariable("type") String layer, @PathVariable("name") String name){
+		return functionDataService.deleteFunction(layer ,name);
 	}
 }

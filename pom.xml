@@ -24,6 +24,11 @@
     	<artifactId>joda-time</artifactId>
     	<version>2.9.4</version>
 	  </dependency>
+	  <dependency>
+   		<groupId>com.github.fge</groupId>
+    	<artifactId>json-schema-validator</artifactId>
+    	<version>2.2.6</version>
+	</dependency>
   </dependencies>
   <properties>
 	<docker.image.prefix>hrs</docker.image.prefix>

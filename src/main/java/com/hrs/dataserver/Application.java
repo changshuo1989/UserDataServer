@@ -8,6 +8,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import com.hrs.dataserver.dao.FunctionDataDAO;
 import com.hrs.dataserver.dao.UserDailyDataDAO;
 
 
@@ -15,15 +16,20 @@ import com.hrs.dataserver.dao.UserDailyDataDAO;
 public class Application implements CommandLineRunner{
 	
 	//@Autowired
-	//private UserDailyDataDAO repo;
+	//private UserDailyDataDAO uRepo;
+	
+	//@Autowired
+	//private FunctionDataDAO fRepo;
+	
 	
 	public static void main(String[] args) {
 	    SpringApplication.run(Application.class, args);
 	}
 	
 	public void run(String... arg0) throws Exception {
-		//repo.deleteAll();
-		//System.out.println(new Date().getTime());
+		//uRepo.deleteAll();
+		//fRepo.deleteAll();
+		System.out.println(new Date().getTime());
 	}
 	
 }
