@@ -11,7 +11,7 @@ public interface CustomUserDailyDataDAO {
 	
 	public List<UserDailyData> findUserDataBySession(String env, String type, String hrsId, String start, String end);
 	
-	public boolean updateData(String env, String hrsId, String type, long ts, UpdatedData data);
+	public boolean addDailyData(String env, String hrsId, String type, long ts, UpdatedData data);
 	
 	//ENVIRONMENT LEVEL
 	public List<UserDailyData> findEnvironmentUserDataBySession(String env, String start, String end);

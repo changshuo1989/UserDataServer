@@ -147,7 +147,8 @@ public class UserDailyData {
 	 */
 	
 	//private Map<String, List<Map<String, String>>> data;
-	public void addUpdatedData(UpdatedData updatedData){
+	public boolean addUpdatedData(UpdatedData updatedData){
+		boolean added=false;
 		if(data==null){
 			this.data=new HashMap<String, List<Map<String,String>>>();
 		}
@@ -182,13 +183,16 @@ public class UserDailyData {
 			if(!isDuplicate){
 				list.add(map);
 				this.data.put(metricName, list);
+				added=true;
 			}
 		}
 		else{
 			List<Map<String, String>> list=new ArrayList<Map<String,String>>();
 			list.add(map);
 			this.data.put(metricName, list);
+			added=true;
 		}
+		return added;
 	}
 	
 	public long getTimestamp() {

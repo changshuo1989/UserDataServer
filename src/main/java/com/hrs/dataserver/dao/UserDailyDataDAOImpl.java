@@ -40,20 +40,24 @@ public class UserDailyDataDAOImpl implements CustomUserDailyDataDAO {
 	
 	
 	
-	public boolean updateData(String env, String hrsId, String type, long ts, UpdatedData data) {
+	public boolean addDailyData(String env, String hrsId, String type, long ts, UpdatedData data) {
 		boolean isFinished=false;
 		try{
 			String id=IdAdapter.getUserIdByElements(env, hrsId, type, ts);
 			UserDailyData user=findUserDailyDataById(id);
 			if(user!=null){
-				user.addUpdatedData(data);
-				operations.save(user);
+				boolean added=user.addUpdatedData(data);
+				if(added){
+					operations.save(user);
+					isFinished=true;
+				}
 			}
 			else{
 				UserDailyData newUser=new UserDailyData(env, hrsId, type, ts, data);
 				operations.save(newUser);
+				isFinished=true;
 			}
-			isFinished=true;
+			
 		}
 		catch(Exception e){
 			e.printStackTrace();
