@@ -61,7 +61,7 @@ public class UserDailyDataService {
 			valid=report.isSuccess();
 			if(valid){
 				//TODO: doing operations
-				
+				System.out.println("start to post data...");
 				
 			}
 		}
@@ -155,6 +155,7 @@ public class UserDailyDataService {
 				
 				//check event template list
 				boolean foundTemplate=checkEventTemplates(userDailyDataRep);
+				System.out.println(foundTemplate);
 				
 				String env=userDailyDataRep.getEnv();
 				String hrsId=userDailyDataRep.getUid();
